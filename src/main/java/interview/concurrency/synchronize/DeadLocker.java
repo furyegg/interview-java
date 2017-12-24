@@ -1,4 +1,4 @@
-package interview.concurrency;
+package interview.concurrency.synchronize;
 
 import java.util.Date;
 
