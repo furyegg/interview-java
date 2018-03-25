@@ -1,4 +1,4 @@
-package interview.sort;
+package interview.algorithm.sort;
 
 import java.util.ArrayList;
 import java.util.Arrays;

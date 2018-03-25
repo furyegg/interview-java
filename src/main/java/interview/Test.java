@@ -1,10 +1,8 @@
 package interview;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Test {
 	public static void main(String[] args) {
-		List<String> list = new ArrayList<>();
+		int a = 0xFFFFFFFF;
+		System.out.println(Integer.toUnsignedString(a));
 	}
 }
