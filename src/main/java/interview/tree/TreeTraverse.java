@@ -1,5 +1,9 @@
 package interview.tree;
 
+import com.google.common.collect.Lists;
+
+import java.util.Deque;
+
 public class TreeTraverse {
     
     private final static TreeNode<String> TREE1 = TreeNode.<String>builder()
@@ -28,10 +32,17 @@ public class TreeTraverse {
         TreeTraverse tt = new TreeTraverse();
         tt.preOrder(TREE1);
         System.out.println();
+        tt.preOrderNoRec(TREE1);
+        System.out.println("\n");
+        
         tt.midOrder(TREE1);
         System.out.println();
+        tt.midOrderNoRec(TREE1);
+        System.out.println("\n");
+        
         tt.postOrder(TREE1);
         System.out.println();
+        System.out.println("\n");
     }
     
     public TreeTraverse() {
@@ -67,5 +78,27 @@ public class TreeTraverse {
     
     private void visitNode(TreeNode<String> node) {
         System.out.print(node.getValue());
+    }
+    
+    private void preOrderNoRec(TreeNode<String> tree) {
+        Deque<TreeNode<String>> stack = Lists.newLinkedList();
+        stack.push(tree);
+        while (!stack.isEmpty()) {
+            TreeNode<String> node = stack.pop();
+            if (node == null) {
+                continue;
+            }
+            visitNode(node);
+            stack.push(node.getRight());
+            stack.push(node.getLeft());
+        }
+    }
+    
+    private void midOrderNoRec(TreeNode<String> tree) {
+        Deque<TreeNode<String>> stack = Lists.newLinkedList();
+        stack.push(tree);
+        while (!stack.isEmpty()) {
+        
+        }
     }
 }
