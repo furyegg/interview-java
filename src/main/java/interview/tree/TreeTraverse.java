@@ -42,6 +42,7 @@ public class TreeTraverse {
         
         tt.postOrder(TREE1);
         System.out.println();
+        tt.postOrderNoRec(TREE1);
         System.out.println("\n");
     }
     
@@ -96,9 +97,61 @@ public class TreeTraverse {
     
     private void midOrderNoRec(TreeNode<String> tree) {
         Deque<TreeNode<String>> stack = Lists.newLinkedList();
-        stack.push(tree);
-        while (!stack.isEmpty()) {
-        
+        TreeNode<String> node = tree;
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
+                stack.push(node);
+                node = node.getLeft();
+            } else {
+                node = stack.pop();
+                visitNode(node);
+                node = node.getRight();
+            }
+        }
+    }
+    
+    private void midOrderNoRec2(TreeNode<String> tree) {
+        Deque<TreeNode<String>> stack = Lists.newLinkedList();
+        TreeNode<String> node = tree;
+        boolean poppedNode = false;
+        while (node != null || !stack.isEmpty()) {
+            if (node.hasLeft() && !poppedNode) {
+                stack.push(node);
+                node = node.getLeft();
+                poppedNode = false;
+                continue;
+            }
+            
+            visitNode(node);
+            
+            if (node.hasRight()) {
+                node = node.getRight();
+                poppedNode = false;
+                continue;
+            }
+            
+            node = stack.pop();
+            poppedNode = true;
+        }
+    }
+    
+    private void postOrderNoRec(TreeNode<String> tree) {
+        Deque<TreeNode<String>> stack = Lists.newLinkedList();
+        TreeNode<String> node = tree;
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
+                stack.push(node);
+                node = node.getLeft();
+            } else {
+                node = stack.peek();
+                if (node.hasRight()) {
+                    node = node.getRight();
+                } else {
+                    stack.pop();
+                    visitNode(node);
+                    node = null;
+                }
+            }
         }
     }
 }
