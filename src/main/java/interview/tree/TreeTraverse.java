@@ -83,6 +83,21 @@ public class TreeTraverse {
     
     private void preOrderNoRec(TreeNode<String> tree) {
         Deque<TreeNode<String>> stack = Lists.newLinkedList();
+        TreeNode<String> node = tree;
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
+                visitNode(node);
+                stack.push(node);
+                node = node.getLeft();
+            } else {
+                node = stack.pop();
+                node = node.getRight();
+            }
+        }
+    }
+    
+    private void preOrderNoRec2(TreeNode<String> tree) {
+        Deque<TreeNode<String>> stack = Lists.newLinkedList();
         stack.push(tree);
         while (!stack.isEmpty()) {
             TreeNode<String> node = stack.pop();
@@ -139,16 +154,17 @@ public class TreeTraverse {
         Deque<TreeNode<String>> stack = Lists.newLinkedList();
         TreeNode<String> node = tree;
         while (node != null || !stack.isEmpty()) {
-            if (node != null) {
+            if (node != null && !node.isVisited()) {
                 stack.push(node);
                 node = node.getLeft();
             } else {
                 node = stack.peek();
-                if (node.hasRight()) {
+                if (node.hasRight() && !node.getRight().isVisited()) {
                     node = node.getRight();
                 } else {
                     stack.pop();
                     visitNode(node);
+                    node.setVisited(true);
                     node = null;
                 }
             }

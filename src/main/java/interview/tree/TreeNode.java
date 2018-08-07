@@ -9,6 +9,7 @@ public class TreeNode<T> {
     private T value;
     private TreeNode<T> left;
     private TreeNode<T> right;
+    private boolean visited;
     
     public boolean hasLeft() {
         return left != null;
