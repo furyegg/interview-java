@@ -3,6 +3,7 @@ package interview.tree;
 import com.google.common.collect.Lists;
 
 import java.util.Deque;
+import java.util.Queue;
 
 public class TreeTraverse {
     
@@ -43,6 +44,9 @@ public class TreeTraverse {
         tt.postOrder(TREE1);
         System.out.println();
         tt.postOrderNoRec(TREE1);
+        System.out.println("\n");
+    
+        tt.levelOrder(TREE1);
         System.out.println("\n");
     }
     
@@ -167,6 +171,22 @@ public class TreeTraverse {
                     node.setVisited(true);
                     node = null;
                 }
+            }
+        }
+    }
+    
+    private void levelOrder(TreeNode<String> tree) {
+        Queue<TreeNode<String>> queue = Lists.newLinkedList();
+        queue.offer(tree);
+        while (!queue.isEmpty()) {
+            TreeNode<String> node = queue.poll();
+            visitNode(node);
+            
+            if (node.hasLeft()) {
+                queue.offer(node.getLeft());
+            }
+            if (node.hasRight()) {
+                queue.offer(node.getRight());
             }
         }
     }
