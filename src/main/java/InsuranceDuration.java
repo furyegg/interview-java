@@ -29,8 +29,8 @@ public class InsuranceDuration {
                 throw new IllegalArgumentException("Each line should includes two values");
             }
             try {
-                Integer start = Integer.valueOf(items[0]);
-                Integer end = Integer.valueOf(items[1]);
+                int start = Integer.valueOf(items[0]);
+                int end = Integer.valueOf(items[1]);
                 return new Duration(start, end);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Include non digital value");
