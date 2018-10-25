@@ -10,49 +10,10 @@ import java.util.Scanner;
 public class InsuranceDurationBak {
     private static final String INPUT_FILE = "input.txt";
     private static final String OUTPUT_FILE = "output.txt";
-    
-    static class Duration {
-        private int start;
-        private int end;
-        
-        public Duration(int start, int end) {
-            if (start >= end) {
-                throw new IllegalArgumentException("Start should less than end");
-            }
-            this.start = start;
-            this.end = end;
-        }
-        
-        public static Duration of(String line) {
-            String[] items = line.split(" ");
-            if (items.length != 2) {
-                throw new IllegalArgumentException("Each line should includes two values");
-            }
-            try {
-                Integer start = Integer.valueOf(items[0]);
-                Integer end = Integer.valueOf(items[1]);
-                return new Duration(start, end);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Include non digital value");
-            }
-        }
-        
-        public int duration() {
-            return end - start;
-        }
-        
-        public int getStart() {
-            return start;
-        }
-        
-        public int getEnd() {
-            return end;
-        }
-    }
-    
-    private static class DurationComparator implements Comparator<Duration> {
+
+    private static class DurationComparator implements Comparator<InsuranceDuration.Duration> {
         @Override
-        public int compare(Duration o1, Duration o2) {
+        public int compare(InsuranceDuration.Duration o1, InsuranceDuration.Duration o2) {
             return o1.getStart() - o2.getStart();
         }
     }
@@ -63,7 +24,7 @@ public class InsuranceDurationBak {
             inputFile = args[0];
         }
         
-        List<Duration> durations = null;
+        List<InsuranceDuration.Duration> durations = null;
         try {
             durations = loadDurations(inputFile);
         } catch (Exception e) {
@@ -83,7 +44,7 @@ public class InsuranceDurationBak {
         }
     }
     
-    static int calculate(List<Duration> durations) {
+    static int calculate(List<InsuranceDuration.Duration> durations) {
         Collections.sort(durations, new DurationComparator());
         
         List<Integer> results = new ArrayList<>(durations.size());
@@ -97,15 +58,15 @@ public class InsuranceDurationBak {
         return results.get(results.size() - 1);
     }
     
-    private static int calculateDuration(List<Duration> durations, int ignoreIndex) {
+    private static int calculateDuration(List<InsuranceDuration.Duration> durations, int ignoreIndex) {
         int result = 0;
-        Duration lastDuration = null;
+        InsuranceDuration.Duration lastDuration = null;
         for (int i = 0; i < durations.size(); ++i) {
             if (i == ignoreIndex) {
                 continue;
             }
             
-            Duration duration = durations.get(i);
+            InsuranceDuration.Duration duration = durations.get(i);
             
             if (result == 0) {
                 result = duration.duration();
@@ -126,8 +87,8 @@ public class InsuranceDurationBak {
         return result;
     }
     
-    private static List<Duration> loadDurations(String inputFile) {
-        List<Duration> durations = new ArrayList<>();
+    private static List<InsuranceDuration.Duration> loadDurations(String inputFile) {
+        List<InsuranceDuration.Duration> durations = new ArrayList<>();
         
         InputStream in = InsuranceDurationBak.class.getClassLoader().getResourceAsStream(inputFile);
         Scanner scanner = new Scanner(in);
@@ -138,7 +99,7 @@ public class InsuranceDurationBak {
                 firstLine = false;
                 continue;
             }
-            durations.add(Duration.of(scanner.nextLine()));
+            durations.add(InsuranceDuration.Duration.of(scanner.nextLine()));
         }
         
         return durations;

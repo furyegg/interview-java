@@ -164,18 +164,22 @@ public class InsuranceDuration {
     }
     
     private static List<Duration> loadDurations() throws IOException {
-        List<Duration> durations = new ArrayList<>();
+        List<Duration> durations = null;
         
         InputStream in = InsuranceDuration.class.getClassLoader().getResourceAsStream(INPUT_FILE);
         Scanner scanner = new Scanner(in);
         boolean firstLine = true;
         while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            
             if (firstLine) {
-                scanner.nextLine();
                 firstLine = false;
+                int size = Integer.valueOf(line);
+                durations = new ArrayList<>(size);
                 continue;
             }
-            durations.add(Duration.of(scanner.nextLine()));
+            
+            durations.add(Duration.of(line));
         }
         in.close();
         
