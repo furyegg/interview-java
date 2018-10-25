@@ -14,8 +14,6 @@ public class InsuranceDuration {
     static class Duration {
         private int start;
         private int end;
-        private int intersect1;
-        private int intersect2;
         
         public Duration(int start, int end) {
             if (start >= end) {
@@ -43,27 +41,6 @@ public class InsuranceDuration {
             return end - start;
         }
         
-        public int twoIntersectLength() {
-            return intersect1 - start + end - intersect2;
-        }
-        
-        public int nonTwoIntersectLength() {
-            if (hasTwoIntersectParts()) {
-                return duration() - twoIntersectLength();
-            } else {
-                return Integer.MAX_VALUE;
-            }
-        }
-        
-        public boolean hasTwoIntersectParts() {
-            return intersect1 > 0 && intersect2 > 0;
-        }
-        
-        public void allIntersect() {
-            intersect1 = end;
-            intersect2 = end;
-        }
-        
         public int getStart() {
             return start;
         }
@@ -71,25 +48,17 @@ public class InsuranceDuration {
         public int getEnd() {
             return end;
         }
-    
-        public void setIntersect1(int intersect1) {
-            this.intersect1 = intersect1;
-        }
-    
-        public void setIntersect2(int intersect2) {
-            this.intersect2 = intersect2;
+        
+        @Override
+        public String toString() {
+            return String.format("(%d, %d)", start, end);
         }
     }
     
     public static void main(String[] args) {
-        String inputFile = INPUT_FILE;
-        if (args.length == 1) {
-            inputFile = args[0];
-        }
-        
         List<Duration> durations = null;
         try {
-            durations = loadDurations(inputFile);
+            durations = loadDurations();
         } catch (Exception e) {
             System.err.println("Failed to load data");
             e.printStackTrace();
@@ -108,54 +77,71 @@ public class InsuranceDuration {
     }
     
     static int calculate(List<Duration> durations) {
-        Collections.sort(durations, (o1, o2) -> o1.getStart() - o2.getStart());
+        Collections.sort(durations, (d1, d2) -> {
+            int start = d1.getStart() - d2.getStart();
+            if (start == 0) {
+                return d2.duration() - d1.duration();
+            } else {
+                return start;
+            }
+        });
         
-        Duration lastDuration = durations.get(0);
+        int minDurationIndex = 0;
+        int minGapDurationIndex = -1;
+        int minGap = -1;
+        
         for (int i = 1; i < durations.size(); ++i) {
-            Duration duration = durations.get(i);
-            if (duration.getEnd() <= lastDuration.getEnd()) {
-                duration.allIntersect();
-            } else if (duration.getStart() < lastDuration.getEnd()) {
-                lastDuration.setIntersect2(duration.getStart());
-                duration.setIntersect1(lastDuration.getEnd());
-                lastDuration = duration;
-            } else if (duration.getStart() >= lastDuration.getEnd()) {
-                lastDuration = duration;
+            Duration current = durations.get(i);
+            
+            if (durations.get(minDurationIndex).duration() > current.duration()) {
+                minDurationIndex = i;
+            }
+            
+            if (i == durations.size() - 1) {
+                break;
+            }
+            
+            Duration previous = durations.get(i - 1);
+            Duration next = durations.get(i + 1);
+            
+            if (current.getEnd() <= previous.getEnd()) {
+                minGapDurationIndex = i;
+                minGap = 0;
+                break;
+            }
+            
+            if (current.getStart() < previous.getEnd()
+                    && current.getEnd() > next.getStart() && current.getEnd() <= next.getEnd()) {
+                int currentGap = next.getStart() - previous.getEnd();
+                if (minGap == -1) {
+                    minGap = currentGap;
+                    minGapDurationIndex = i;
+                }
+                if (currentGap < minGap) {
+                    minGap = currentGap;
+                    minGapDurationIndex = i;
+                }
             }
         }
         
-        return processDuration(durations);
-    }
-    
-    private static int processDuration(List<Duration> durations) {
-        boolean hasTwoIntersect = durations.stream()
-                .anyMatch(d -> d.hasTwoIntersectParts());
-        
-        if (hasTwoIntersect) {
-            durations = processTwoIntersect(durations);
+        int ignoreIndex;
+        if (minGap < 0) {
+            ignoreIndex = minDurationIndex;
         } else {
-            durations = processNonTwoIntersect(durations);
+            ignoreIndex = minGap > durations.get(minDurationIndex).duration() ? minDurationIndex : minGapDurationIndex;
         }
-    
-        List<Duration> finalDurations = durations.subList(1, durations.size());
-        Collections.sort(finalDurations, (o1, o2) -> o1.getStart() - o2.getStart());
-        return calculateDuration(finalDurations);
+        
+        return calculateDuration(durations, ignoreIndex);
     }
     
-    private static List<Duration> processTwoIntersect(List<Duration> durations) {
-        Collections.sort(durations, (o1, o2) -> o1.nonTwoIntersectLength() - o2.nonTwoIntersectLength());
-        return durations;
-    }
-    
-    private static List<Duration> processNonTwoIntersect(List<Duration> durations) {
-        Collections.sort(durations, (o1, o2) -> o1.duration() - o2.duration());
-        return durations;
-    }
-    
-    private static int calculateDuration(List<Duration> durations) {
+    private static int calculateDuration(List<Duration> durations, int ignoreIndex) {
         int result = 0;
         Duration lastDuration = null;
         for (int i = 0; i < durations.size(); ++i) {
+            if (i == ignoreIndex) {
+                continue;
+            }
+            
             Duration duration = durations.get(i);
             
             if (result == 0) {
@@ -177,10 +163,10 @@ public class InsuranceDuration {
         return result;
     }
     
-    private static List<Duration> loadDurations(String inputFile) throws IOException {
+    private static List<Duration> loadDurations() throws IOException {
         List<Duration> durations = new ArrayList<>();
         
-        InputStream in = InsuranceDuration.class.getClassLoader().getResourceAsStream(inputFile);
+        InputStream in = InsuranceDuration.class.getClassLoader().getResourceAsStream(INPUT_FILE);
         Scanner scanner = new Scanner(in);
         boolean firstLine = true;
         while (scanner.hasNextLine()) {

@@ -66,5 +66,30 @@ public class InsuranceDurationTest {
         int result = InsuranceDuration.calculate(durations);
         assertThat(result).isEqualTo(15);
     }
+    
+    @Test
+    public void calculate_6() {
+        List<InsuranceDuration.Duration> durations = Lists.newArrayList(
+                new InsuranceDuration.Duration(1, 10),
+                new InsuranceDuration.Duration(5, 105),
+                new InsuranceDuration.Duration(100, 110)
+        );
+        int result = InsuranceDuration.calculate(durations);
+        assertThat(result).isEqualTo(105);
+    }
+    
+    @Test
+    public void calculate_7() {
+        List<InsuranceDuration.Duration> durations = Lists.newArrayList(
+                new InsuranceDuration.Duration(1, 5),
+                new InsuranceDuration.Duration(1, 3),
+                new InsuranceDuration.Duration(1, 4),
+                new InsuranceDuration.Duration(3, 7),
+                new InsuranceDuration.Duration(6, 9),
+                new InsuranceDuration.Duration(8, 10)
+        );
+        int result = InsuranceDuration.calculate(durations);
+        assertThat(result).isEqualTo(8);
+    }
 
 }

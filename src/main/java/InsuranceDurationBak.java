@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-public class InsuranceDuration2 {
+public class InsuranceDurationBak {
     private static final String INPUT_FILE = "input.txt";
     private static final String OUTPUT_FILE = "output.txt";
     
@@ -129,7 +129,7 @@ public class InsuranceDuration2 {
     private static List<Duration> loadDurations(String inputFile) {
         List<Duration> durations = new ArrayList<>();
         
-        InputStream in = InsuranceDuration2.class.getClassLoader().getResourceAsStream(inputFile);
+        InputStream in = InsuranceDurationBak.class.getClassLoader().getResourceAsStream(inputFile);
         Scanner scanner = new Scanner(in);
         boolean firstLine = true;
         while (scanner.hasNextLine()) {
