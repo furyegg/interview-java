@@ -78,13 +78,13 @@ public class InsuranceDuration {
     
     static int calculate(List<Duration> durations) {
         Collections.sort(durations, (d1, d2) -> {
-            int start = d1.getStart() - d2.getStart();
-            if (start == 0) {
-                return d2.duration() - d1.duration();
-            } else {
-                return start;
-            }
-        });
+			int start = d1.getStart() - d2.getStart();
+			if (start == 0) {
+				return d2.duration() - d1.duration();
+			} else {
+				return start;
+			}
+		});
         
         int minDurationIndex = 0;
         int minGapDurationIndex = -1;
@@ -169,17 +169,23 @@ public class InsuranceDuration {
         InputStream in = InsuranceDuration.class.getClassLoader().getResourceAsStream(INPUT_FILE);
         Scanner scanner = new Scanner(in);
         boolean firstLine = true;
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
+        int[] tuple = {0, 0};
+        int count = 0;
+        
+        while (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
             
             if (firstLine) {
                 firstLine = false;
-                int size = Integer.valueOf(line);
-                durations = new ArrayList<>(size);
+                durations = new ArrayList<>(n);
                 continue;
             }
             
-            durations.add(Duration.of(line));
+            tuple[count++] = n;
+            if (count == 2) {
+				durations.add(new Duration(tuple[0], tuple[1]));
+				count = 0;
+			}
         }
         in.close();
         
