@@ -45,13 +45,12 @@ public class TreeTraverse {
         System.out.println();
         tt.postOrderNoRec(TREE1);
         System.out.println("\n");
-    
-        tt.levelOrder(TREE1);
+        
+        tt.depthFirstSearch(TREE1);
         System.out.println("\n");
-    }
-    
-    public TreeTraverse() {
-    
+        
+        tt.breadthFirstSearch(TREE1);
+        System.out.println("\n");
     }
     
     private void preOrder(TreeNode<String> tree) {
@@ -175,13 +174,30 @@ public class TreeTraverse {
         }
     }
     
-    private void levelOrder(TreeNode<String> tree) {
+    private void depthFirstSearch(TreeNode<String> tree) {
+        if (tree == null) {
+            return;
+        }
+        Deque<TreeNode<String>> stack = Lists.newLinkedList();
+        stack.offer(tree);
+        while (!stack.isEmpty()) {
+            TreeNode<String> node = stack.pop();
+            visitNode(node);
+            if (node.hasRight()) {
+                stack.push(node.getRight());
+            }
+            if (node.hasLeft()) {
+                stack.push(node.getLeft());
+            }
+        }
+    }
+    
+    private void breadthFirstSearch(TreeNode<String> tree) {
         Queue<TreeNode<String>> queue = Lists.newLinkedList();
         queue.offer(tree);
         while (!queue.isEmpty()) {
             TreeNode<String> node = queue.poll();
             visitNode(node);
-            
             if (node.hasLeft()) {
                 queue.offer(node.getLeft());
             }
